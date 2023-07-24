@@ -4,7 +4,7 @@ Java数据类型
 
 引用数据类型：类，接口，数组
 
-SSM ：spring srpingmvc mysql
+
 
 #### Java项目和web项目的区别
 
@@ -61,3 +61,34 @@ Apache服务器 只处理 静态HTML；tomcat服务器 静态HTML 动态 JSP Ser
 apache是web服务器，tomcat是应用（java）服务器，它只是一个servlet容器，可以认为是apache的扩展，但是可以独立于apache运行。
 
 换句话说，apache是一辆卡车，上面可以装一些东西如html等。但是不能装水，要装水必须要有容器（桶），而这个桶也可以不放在卡车上。
+
+
+
+## SSM ：spring srpingmvc mybatis
+
+**spring：**ioc/di 创建程序中的实例对象
+
+**springmvc：**程序与前端交互。 浅显理解：目前项目是否可以获取前端传过来的数据。目前可以响应内容到前端。
+
+​					   是对于servlet的封装，依赖于tomcat服务器
+
+**mybatis：**程序与数据库交互
+
+**补充：**
+
+Servlet
+
+Servlet是JavaEE规范的一种，主要是为了扩展Java作为Web服务的功能。为了方便第三方准守这种规范，Sun公司（现在Oracle公司）提供了一系列相关的接口，即Servlet API。
+
+Servlet应用 
+
+Servlet应用 直接或间接实现了Servlet接口并且需要运行在Servlet容器中的Java程序，主要用来生成动态的Web页面。Servlet应用不能独立于运行，必须被部署到Servlet容器。
+
+Servlet容器
+
+Servlet容器（Servlet引擎）是Web服务器或应用程序服务器的一部分，用于在发送的请求和响应之上提供网络服务，解码基于MIME的请求，格式化基于MIME的响应，即Servlet容器用来接收客户端请求，处理协议、请求内容等，初始化Servlet实例（只需要第一次初始化）并调用Servlet应用的对应方法，然后Servlet应用返回处理结果，经Servlet容器再返回到用户客户端。
+
+Tomcat容器
+
+Tomcat容器，又叫应用服务器，也有人称之为Servlet容器。其实，本质上，Tomcat容器具有Servlet容器的功能，是Servlet容器的一种开源实现，但是它又不仅仅只是Servlet容器。
+
