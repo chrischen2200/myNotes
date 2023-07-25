@@ -845,7 +845,7 @@ spring:
     password: root
 mybatis:
   type-aliases-package: com.ohayoo.pojo
-  mapper-locations: classpath:mybatis/*.xml
+  mapper-locations: classpath:mybatis/*.xml  //mapper路径
 
 ```
 
