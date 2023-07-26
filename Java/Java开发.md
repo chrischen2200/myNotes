@@ -752,7 +752,7 @@ public class BookController {
 
 
 
-## SpringBoot环境搭建
+## SpringBoot环境搭建（内置Tomcat，不需要另外配置）
 
 #### 1.创建Maven工程
 
