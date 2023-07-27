@@ -13,6 +13,11 @@ spring:
     url: jdbc:mysql://localhost:3306/mygo
     username: root
     password: root
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
 ```
 
 #### 2.导入依赖（pom.xml）

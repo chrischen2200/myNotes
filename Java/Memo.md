@@ -92,3 +92,6 @@ Tomcat容器
 
 Tomcat容器，又叫应用服务器，也有人称之为Servlet容器。其实，本质上，Tomcat容器具有Servlet容器的功能，是Servlet容器的一种开源实现，但是它又不仅仅只是Servlet容器。
 
+## 请求响应介绍-HTTP响应格式
+
+![Screenshot 2023-07-26 at 22.17.56](/Users/chris/Desktop/MyImgs/Screenshot 2023-07-26 at 22.17.56.png)
