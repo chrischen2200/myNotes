@@ -196,7 +196,7 @@ spring提供的方法：
 
   注：每一次请求都是一个线程
 
-#### ![Screenshot 2023-07-29 at 20.58.54](/Users/chris/Desktop/MyImgs/Screenshot 2023-07-29 at 20.58.54.png)
+###### ![Screenshot 2023-07-29 at 20.58.54](/Users/chris/Desktop/MyImgs/Screenshot 2023-07-29 at 20.58.54.png)
 
 ![Screenshot 2023-07-29 at 21.02.13](/Users/chris/Desktop/MyImgs/Screenshot 2023-07-29 at 21.02.13.png)
 
@@ -217,3 +217,19 @@ spring提供的方法：
 #### 2-4编辑员工
 
 #### 2-5导入分类模块功能代码
+
+## 3.公共字段自动填充（AOP，自定义注解）
+
+ 		**问题：公共字段重复操作，代码冗余**
+
+![Screenshot 2023-07-30 at 17.13.59](/Users/chris/Desktop/MyImgs/Screenshot 2023-07-30 at 17.13.59.png)
+
+![Screenshot 2023-07-30 at 17.13.40](/Users/chris/Desktop/MyImgs/Screenshot 2023-07-30 at 17.13.40.png)
+
+## 4.菜品删除
+
+ **当操作表时，在serveice实现类的方法上加事务注解@Transactional**
+
+## 5.Redis缓存（框架：Spring Data）
+
+## 6.Spring Task
