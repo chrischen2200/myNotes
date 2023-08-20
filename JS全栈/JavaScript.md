@@ -1136,6 +1136,70 @@ box.onclick = function(){
   - 私密不漏
   - 重名不怕
   - 依赖不乱
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  - Proxy(代理)
+
+- ```js
+      let s = new Map()
+      let p= new Proxy(s,{
+          get(target,key){
+              let value=target[key]
+              //判断如果是方法，修改this指向
+              if(value instanceof Function){
+                  return value.bind(target)  //获取默认行为
+              }
+              return value
+          },
+          set(target,key,value){
+              target[key]=value     //修改自定义属性
+          }
+      })
+  ```
+
+- Refect
+
+  Reflect  可以用于获取目标对象的行为，它与Object类似，但是更易读，为操作对象提供了一个种更优雅的方式，它的方法与Proxy是对应的
+
+  ```js
+   let s = new Map()
+      let p= new Proxy(s,{
+          get(target,key){
+              let value=Reflect.get(target,key)
+              //判断如果是方法，修改this指向
+              if(value instanceof Function){
+                  return value.bind(target)  //获取默认行为
+              }
+              return value
+          },
+          set(target,key,value){
+              Reflect.set(...arguments)
+          }
+      })
+  ```
+
+  ```js
+  let arr = [1,2,3]
+  let proxy = new Proxy(arr,{
+    get(){
+      return Reflect.get(...arguments)
+    },
+    set(){
+      Reflect.set(...arguments)
+    }
+  })
+  ```
+
+  
+
+
 
 ## 22.面向对象
 
@@ -1340,3 +1404,539 @@ Jsonp（JSON with Padding）是jso的一种“使用模式”，可以让网页�
 1.记住列表的索引
 
 2.jsqonp案例优化--函数防抖
+
+## 27.jQuery
+
+### 27.1选择器
+
+- 基本选择器
+
+  - ```js
+      console.log($('#u'))
+      console.log($('#u li'))
+      console.log($('#u>li'))
+    ```
+
+- 特殊选择器
+
+  - ```js
+      console.log($('#u li:first'))
+      console.log($('#u li:last'))
+      
+      let index=2
+      console.log($(`#u li:eq(${index})`))
+      
+      console.log($('#u li:odd'))//奇数
+      console.log($('#u li:even'))//偶数
+    ```
+
+- 二次筛选方法（链式调用）
+
+  - ```js
+      console.log($('#u li').first())
+      console.log($('#u li').last())
+      console.log($('#u li').eq(3))
+      
+      console.log($('#u li.active').next())
+      	console.log($('#u li.active').nextAll())
+      console.log($('#u li.active').nextAll('.a'))
+      console.log($('#u li.active').nextUntil())
+      console.log($('#u li.active').nextUntil('.end'))
+      
+      console.log($('#u li.active').prev())
+      console.log($('#u li.active').prevAll())
+      console.log($('#u li.active').prevUntil())
+      console.log($('#u li.active').prevUntil('.start'))
+      
+      console.log($('#u li.active').parent())
+      console.log($('#u li.active').parents()) // 到html
+      
+      console.log($('#u li.active').siblings())
+      
+      console.log($('#u').children())
+      
+      console.log($('#u').find())//深度查找
+      console.log($('#u').find('li'))//深度查找
+      
+      console.log($('#u li.active').index())//获取索引
+    ```
+
+
+### 27.2操作样式
+
+- css()
+
+  - ```js
+    //获取样式
+    $('#box').css('width')
+    $('#box').css('height')
+    
+    //设置样式
+    $('#box').css('width'，'200px')
+    $('#box').css('width'，200)
+    
+    //对所有li加颜色
+    $('ul li').css('color','red')//隐式迭代
+    
+    //批量设置
+    $('ul li:eq(3)').css({width:200,height:300})
+    ```
+
+### 27.3操作class
+
+- addClass,removeClass，hasClass,toggleClass
+
+  - ```js
+    //具有隐式迭代的特性
+    $('#box').addClass('active')
+    $('#box').removeClass('active')
+    
+    //判断是是否有相应的class
+    $('#box').hasClass('active')
+    
+    //切换class
+    $('#box').toggleClass('active')
+    
+    ```
+
+### 27.4操作内容
+
+- html() => innerHTML
+- text() => innerText
+- val() => value
+
+### 27.5操作属性
+
+- attr() //操作自定义属性
+
+  - ```js
+    $('#box').attr('id')  //获取原生
+    $('#box').attr('id','box2') //设置原生
+    $('#box').removeAttr('id')  //移除原生
+    
+    $('#box').attr('index')  //获取自定义
+    $('#box').attr('index','box2') //设置自定义
+    $('#box').removeAttr('index')  //移除自定义
+    
+    $('#mybtn').attr('disabled',true)
+    ```
+
+- prop() //操作原生属性
+
+  - ```js
+    $('#box').prop('id')  //获取原生
+    $('#box').prop('id','box2') //设置原生
+    
+    $('#mybtn').prop('disabled',true)
+    ```
+
+### 27.6操作偏移量
+
+- offset() //距离文档流左上角的left，top。如果传参数就是设置
+- Position() //有定位元素的left，top。不支持设置
+
+### 27.7获取元素的尺寸
+
+- 内容宽高
+  - $('#box').width() / $('#box').height() 
+- 内容宽高+padding
+  - ('#box').innerWidth() / $('#box').innerHeight() 
+- 内容宽高+padding+border
+  - ('#box').outerWidth() / $('#box').outerHeight() 
+- 内容宽高+padding+border+margin
+  - ('#box').outerWidth(true) / $('#box').outerHeight(true) 
+
+### 27.8事件处理
+
+- on
+
+  - ```js
+    $('ul li').on('click',function(){console.log('OK')}) //隐式迭代，绑定事件
+    ```
+
+- on -事件委托
+
+  - ```js
+    $('ul').on('click','button',function(){console.log('OK')}) //点击button节点时冒泡触发
+    ```
+
+- on -传参数（必须是对象）
+
+  - ```js
+    $('ul').on('click',{name:'chris'},function(){console.log('OK')}) 
+    ```
+
+- on -事件委托+传参数（随意）
+
+  - ```js
+    $('ul').on('click','button',{name:'chris'},function(){console.log('OK')}) //点击button节点时冒泡触发
+    ```
+
+- one 一次事件 /on 每次点击都触发
+
+  - ```js
+    $('ul').one('click','button',function(){console.log('OK')})
+    ```
+
+- 常用的方法函数：click, mouseover(),mouse out(),blur(),change(),input()...
+
+  - ```js
+    $('ul').click({name:'chris'},function(){...}).mouseover(function(){....})  //能传参数，不能事件委托
+    ```
+
+- off 解绑事件
+
+  - ```js
+    $('ul').off()//解绑所有事件
+    $('ul').off('click')//解绑click事件
+    $('ul').off('click'，B)//解绑click事件的B处理函数
+    ```
+
+### 27.8动画
+
+基本动画：
+
+- show
+
+  - ```js
+    $('div').show() //如果元素本身是display none的状态就可以显示出来
+    
+    //接受三个参数
+    //$('div').show('毫秒','速度','回调函数')
+    $('div').show('1000','linear',function(){})
+    ```
+
+- hide
+
+  - ```js
+    $('div').show() //如果元素本身是display none的状态就可以隐藏
+    
+    //接受三个参数
+    //$('div').hide('毫秒','速度','回调函数')
+    $('div').hide('1000','linear',function(){})
+    ```
+
+- toggle
+
+  - ```js
+    //同上
+    ```
+
+- slideDown()
+
+  - ```js
+    //同上
+    ```
+
+- slideUp()
+
+  - ```js
+    //同上
+    ```
+
+- slideToggle
+
+  - ```js
+    //同上
+    ```
+
+- fadeIn
+
+- fadeOut
+
+- fadeToggle
+
+- fadeTo
+
+  - ```js
+    //指定到透明度
+    //$('div').fadeTo('毫秒',‘透明度’,'速度','回调函数')
+    ```
+
+综合动画：
+
+1.没有过度的样式，不支持
+
+2.颜色变化不支持
+
+3.transform
+
+- animate
+
+  - ```js
+    //$('div').animate(‘{left:'100px',top:100}’，'毫秒','速度','回调函数')
+    ```
+
+- stop //运动到哪里，就停到哪里 //应该其他动画函数之前调用
+
+  - ```js
+    //$('div').stop()
+    ```
+
+- finish //运动到哪，立即到完成位置
+
+  - ```js
+    //$('div').finish()
+    ```
+
+### 27.9操作节点
+
+- 创建
+
+  - ```js
+    const myDiv=$('<div>Hello World!!</div>').addClass('active').css('background','red')
+    ```
+
+- 插入
+
+  - ```js
+    //往后面追加子节点
+    $('#box').append(myDiv)
+    myDiv.appendTo($('#box'))
+    
+    //往前面追加子节点
+    $('#box').prepend(myDiv)
+    myDiv.prependTo($('#box'))
+    
+    //往前面追加兄弟节点
+    $('#box').before(myDiv)
+    myDiv.insertBefore($('#box'))
+    
+    //往后面追加兄弟节点
+    $('#box').after(myDiv)
+    myDiv.insertAfter($('#box'))
+    
+    ```
+
+- 删除
+
+  - ```js
+    //删除自己
+    $('#box').remove()
+    
+    //清空内部
+    $('#box').empty()
+    $('#box').html()
+    ```
+
+- 替换
+
+  - ```js
+    $('#box span').replaceWith(myDiv)
+    myDiv.replaceAll('#box span')
+    ```
+
+- 克隆
+
+  - ```js
+    $('#box').clone()
+    $('#box').clone(true)//事件也克隆，子元素也克隆
+    $('#box').clone(true，false) //事件也克隆，子元素不克隆
+    $('#box').clone(false，false) //事件不克隆，子元素不克
+    ```
+
+### 27.10Ajax
+
+基础：get/post====>$.get()/$.post()
+
+```js
+//get请求
+$.ajax({
+  url:'',
+  //async:true,
+  data:{},
+  //method:'get',
+  //headers:{},
+ 	//dataType:'string',
+  success:function(res){console.log(res)},
+  error:function(res){console.log(res)}，
+  //timeout:1000
+})
+
+//psot请求
+$.ajax({
+  url:'',
+  //async:true,
+  data:{
+    username:'chris',
+    password:'123'
+  },
+  method:'post',
+  //headers:{
+  	//'conten-type':'applicatoin/www-s-formurlencode'
+  //},
+ 	//dataType:'string',
+  success:function(res){console.log(res)},
+  error:function(res){console.log(res)}，
+  //timeout:1000
+})
+
+
+//promise风格
+$.ajax({
+  url:'',
+  //async:true,
+  data:{},
+  //method:'get',
+  //headers:{},
+ 	//dataType:'string',
+  //timeout:1000
+}).then(res=>{console.log(res)}).catch(err=>{console.log(err)})
+
+//jsonp
+$.ajax({
+  url:'',
+ 	dataType:'jsonp',
+  data:{},
+	sucess(res){
+    ....
+  },
+  jsonp:'cb',
+  jsonpCallbak:'fn'
+})
+
+```
+
+全局ajax函数
+
+- 全局的ajax函数，我们也叫做 ajax的钩子函数
+
+- 也就是在一个ajax的整个过程中的某一个阶段执行的函数
+
+- 而且每一个ajax请求都会触发
+
+  ajaxStart
+
+  - 任意一个请求在开始的时候就是触发这个函数
+
+    ```js
+    $(window).ajaxStart(function(){
+    	console.log('当前页面作用域，第一个ajax发送之前执行')
+      console.log('显示loading')
+    })
+    ```
+
+  ajaxSend
+
+  - 任意一个请求在准备send之前会触发这个函数
+
+    ```js
+    $(window).ajaxSend(function(){
+    	console.log('每一个ajax发送之前执行')
+    })
+    ```
+
+  ajaxSuccess（后置）
+
+  - 任意一个请求在成功后触发这个函数
+
+    ```js
+    $(window).ajaxSuccess(function(){
+    	console.log('每一个ajax成功会触发一次')
+    })
+    ```
+
+  ajaxError
+
+  - 任意一个请求在失败后触发这个函数
+
+    ```js
+    $(window).ajaxError(function(){
+    	console.log('每一个ajax失败会触发一次')
+    })
+    ```
+
+  ajaxComplete
+
+  - 每一个请求成功活着失败，都会触发一次
+
+    ```js
+    $(window).ajaxComplete(function(){
+    	console.log('每一个ajax成功活失败都会触发一次')
+    })
+    ```
+
+  ajaxStop
+
+  - 当前页面作用或 最后一个ajax发送之前执行
+
+    ```js
+    $(window).ajaxStop(function(){
+      console.log('每一个ajax成功会触发一次')
+    	console.log('隐藏loading')
+    })		
+    ```
+
+### 27.11 深浅拷贝
+
+在 jQuery 中，您可以使用 `$.extend()` 方法来进行浅复制和深复制。这个方法可以用于将一个或多个对象的内容合并到一个目标对象中。
+
+**浅复制：**
+
+浅复制只会复制对象的一级属性，如果对象的属性值是对象或数组，浅复制会复制引用而不是创建新的副本。
+
+```
+javascriptCopy code
+var sourceObj = { a: 1, b: { c: 2 } };
+var shallowCopy = $.extend({}, sourceObj);
+
+shallowCopy.b.c = 3; // This will also affect sourceObj.b.c
+console.log(sourceObj);     // { a: 1, b: { c: 3 } }
+console.log(shallowCopy);   // { a: 1, b: { c: 3 } }
+```
+
+**深复制：**
+
+深复制会递归地复制所有嵌套的对象和数组，确保创建一个全新的副本。
+
+```
+javascriptCopy code
+var sourceObj = { a: 1, b: { c: 2 } };
+var deepCopy = $.extend(true, {}, sourceObj);
+
+deepCopy.b.c = 3; // This won't affect sourceObj.b.c
+console.log(sourceObj);   // { a: 1, b: { c: 2 } }
+console.log(deepCopy);     // { a: 1, b: { c: 3 } }
+```
+
+在 `$.extend()` 中，将 `true` 作为第一个参数可以表示深复制。如果只传递一个目标对象，则将其他源对象的属性合并到目标对象中，这也可以看作是一种浅复制。
+
+请注意，自从 JavaScript 原生引入了更多深浅拷贝方式，使用 `$.extend()` 并不是最佳的现代做法。在较新的代码中，您可以考虑使用更现代的方法，比如 `Object.assign()`（浅复制）和递归函数（实现深复制）。
+
+
+
+**递归复制：** 递归地遍历并复制每个嵌套的对象或数组。这种方法需要您编写递归函数来处理不同类型的数据。
+
+```
+javascriptCopy code
+function deepClone(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    let clone = Array.isArray(obj) ? [] : {};
+
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            clone[key] = deepClone(obj[key]);
+        }
+    }
+
+    return clone;
+}
+
+const originalObject = { /* your object here */ };
+const deepClone = deepClone(originalObject);
+```
+
+​		
+
+
+
+
+
+​			
+
+
+
+​			
