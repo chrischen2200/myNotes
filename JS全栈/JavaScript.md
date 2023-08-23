@@ -1438,7 +1438,7 @@ Jsonp（JSON with Padding）是jso的一种“使用模式”，可以让网页�
       console.log($('#u li').eq(3))
       
       console.log($('#u li.active').next())
-      	console.log($('#u li.active').nextAll())
+      console.log($('#u li.active').nextAll())
       console.log($('#u li.active').nextAll('.a'))
       console.log($('#u li.active').nextUntil())
       console.log($('#u li.active').nextUntil('.end'))

@@ -580,3 +580,260 @@ if(cookies != null && cookies.length>0){
   通常情况下，设置 Cookie 的路径为根路径 `/` 可以使 Cookie 在整个应用程序范围内可见，而设置特定的子路径可以限制 Cookie 的可见范围。
   
   需要注意的是，如果某个路径设置了 Cookie，那么该路径的所有子路径都可以访问该 Cookie。例如，如果设置了路径为 `/app`，那么 `/app/page1`、`/app/page2` 等路径下的 URL 都可以访问该 Cookie。
+
+# 11.HttpSession对象
+
+HttpSession对象是Javax.servlet.http.HttpSession的实例，该接口并不像HttpServletRequeset或HttpServletResponse还存在一个父接口，该接口只是一个纯粹的接口。这因为session本身就属于HTTP协议的范畴。
+
+Session的作用就是为了标识一次绘画，或者说确认一个用户；并且在一次会话（一个用户的多次请求）期间共享数据。我们可以通过request.getSession()方法，来获取当前会话的session对象。
+
+```java
+//如果session对象存在，则获取；如果session对象不存在，则创建
+HttpSession session = req.getSession();
+```
+
+- 常用方法：
+
+  ```java
+  //获取session的会话标识符 getId()
+  String id = session.getId();
+  System.out.println(id);
+  
+  //获取session的创建时间 getCreationTime()
+  long creationTime = session.getCreationTime();
+  System.out.println(creationTime);
+  
+  //获取最后一次访问时间 getLastAccessedTime()
+  long lastAccessedTime = session.getLastAccessedTime();
+  System.out.println(lastAccessedTime);
+  
+  //判断是否是新的session对象 isNew()
+  boolean isNew = session.isNew();
+  System.out.println(isNew);
+  ```
+
+  - session域对象.    
+
+    - 设置域对象内容：session.setAttribute("name","chris");
+
+    - 获取域对象内容：session.getAttribute("name")
+
+    - 移除域对象内容：session.removeAttribute("name")
+
+      **作用范围**：会话有效，域对象内容即有效		
+
+    | 请求转发          | 重定向            |
+    | ----------------- | ----------------- |
+    | 一次请求          | 两次请求          |
+    | request作用域有效 | request作用域无效 |
+    | session作用域有效 | session作用域有效 |
+
+- Session对象的销毁
+
+  - 默认到期时间：
+
+    - Tomcat中session默认的存活时间为30min，即你不操作界面的时间，一旦有操作，session会重新计时。
+
+    - 可以在Tomcat中的conf目录下的web.xml文件中进行修改
+
+      ```xml
+      <!-- 单位：分钟 -->
+      <session-config>
+      	<session-timeout>30</session-timeout>
+      </session-config>
+      ```
+
+  - 手动设置到期时间
+
+    - 可以在程序中即设定session的生命周期
+    - 通过setMaxInactiveInterval(int) 来设定session的最大不活动时间，单位为秒
+    - 可以通过getMaxInactiveInterval()方法来查看当前session对象的的最大不活动时间
+
+  - 立即销毁
+
+    - 可以通过invalidate()方法让session即可失效
+
+  - 关闭浏览器
+
+    - session底层依赖cookkie，cookie对象默认只在浏览器内存中存活，关闭浏览器即失效
+
+  - 关闭服务器
+
+    - 当关闭浏览器，session销毁
+
+# 12.ServletContext对象
+
+`ServletContext` 是 Java Servlet API 中的一个接口，用于表示 Web 应用程序在 Web 服务器中的上下文信息。每个 Web 应用程序都有一个与之关联的 `ServletContext` 对象，它提供了访问应用程序范围内的信息和功能的方法。`ServletContext` 可以在整个 Web 应用程序中共享数据和资源。
+
+`ServletContext` 对象在 Web 应用程序的整个生命周期中都存在，并且在整个应用程序中共享。它允许不同的 Servlet 和 JSP 页面之间共享数据、资源和信息，使得在应用程序范围内实现全局的状态管理变得更加方便。
+
+- 获取方法：
+
+```java
+//获取request对象获取
+ServletContext servletContext1 = request.getServletContext();
+//通过session兑现获取
+ServletContext servletContext2 = request.getSession().getServletContext();
+//通过ServletConfig对象获取        
+ServletContext servletContext3 =getServletConfig().getServletContext();
+ //直接获取       
+ServletContext servletContext4 = getServletContext();
+```
+
+- 常用方法：
+
+```java
+//获取当前服务器的版本信息
+String serverInfo = request.getServletContext().getServerInfo();
+
+//获取项目的真实路径
+String realPath = request.getServletContext().getRealPath("/");
+```
+
+- 域对象
+
+  ```java
+  // 获取 ServletContext 对象
+  ServletContext context = getServletContext();
+  
+  // 在 ServletContext 域对象中设置属性
+  context.setAttribute("message", "Hello from ServletContext");
+  
+  // 在 ServletContext 域对象中获取属性
+  String message = (String) context.getAttribute("message");
+  
+  //从 ServletContext 域对象中移除属性
+  context.removeAttribute("message");
+  ```
+
+- Servlet的三大域对象
+
+  - request域对象：在一次请求中有效。请求转发有效，重定向失效。
+  - session域对象：在一次会话中有效。请求转发和重定向有效，session销毁后失效。
+  - servletContext域对象：在整个应用程序中有效。服务器关闭后失效。
+
+# 13.文件上传和下载
+
+文件上传
+
+- 前端实现
+
+  1. 准备表单
+  2. 设置表单的提交类型为POST请求 method="post"
+  3. 设置表单类型为文件上传表单 enctype="multipart/form-data"
+  4. 设置文件提交的地址
+  5. 准备表单元素
+     - 普通的表单项 type="text"
+     - 文件项 type="file"
+
+  6. 设置表单元素的name属性值（表单提交一定要设置表单元素的name属性值，否则后台无法接受数据！）
+
+  ```html
+  <form action="UploadServlet" enctype="multipart/form-data" method="post">
+      Name:<input type="text" name="uname"/> <br>
+      File:<input type="file" name="myfile"/><br>
+      <button>Submit</button>
+  </form>
+  ```
+
+- 后端实现
+
+  1. 使用注解 @MultipartConfig将一个Servlet标识为支持文件上传
+
+  2. Servlet将 multipart/form-data 的POSt请求封装成Part对象，通过Part对上传的文件进行操作
+
+     ```java
+     @WebServlet("/UploadServlet")
+     @MultipartConfig
+     public class UploadServlet extends HttpServlet {
+         @Override
+         protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+             System.out.println("File uploading");
+     
+             req.setCharacterEncoding("UTF-8");
+     
+             ServletContext context = req.getServletContext();
+             String uname = req.getParameter("uname");
+             System.out.println(uname);
+     
+             Part part = req.getPart("myfile");
+             String filename = part.getSubmittedFileName();
+             System.out.println(filename);
+     
+             String uploadPath = getServletContext().getRealPath("") ;
+     
+             part.write(uploadPath+File.separator+filename);
+             resp.getWriter().write("Success!!");
+     
+     
+         }
+     }
+     ```
+
+文件下载
+
+- 超链接下载
+
+  - 默认下载
+
+    ```html
+    <!--当超链接遇到浏览器不识别的资源时，会自动下载 -->
+    <a href="test.zip">超链接下载</a>
+    ```
+
+  - 指定download属性下载
+
+    ```html
+    <!--当超链接遇到浏览器识别的资源时，默认不会下载。通过download属性可进行下载 -->
+    <a href="test.txt download">超链接下载</a>
+    ```
+
+- 后台实现下载
+
+  实现步骤：
+
+  1. 需要通过response.seContentType方法设置Content- type头字段的值，为浏览器无法使用某种方式或激活某个程序来处理MIME类型，例如“application/octet-stream” 或“application/x-msdownload”等。
+
+  2. 需要通过response.seHeader 方法设置Conten-Disposition头的值为“attachment;filename=文件名”
+
+  3. 读取下载文件，调用response.getOutputStream 方法向客户端卸乳附件内容。
+
+     ```java
+     import java.io.*;
+     import javax.servlet.ServletException;
+     import javax.servlet.annotation.WebServlet;
+     import javax.servlet.http.HttpServlet;
+     import javax.servlet.http.HttpServletRequest;
+     import javax.servlet.http.HttpServletResponse;
+     
+     @WebServlet("/DownloadServlet")
+     public class DownloadServlet extends HttpServlet {
+         protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                 throws ServletException, IOException {
+             // 获取文件路径
+             String filePath = "/path/to/your/file.txt"; // 替换为实际的文件路径
+     
+             // 设置响应内容类型
+             response.setContentType("application/octet-stream");
+             
+             // 设置响应头，提示下载
+             String headerKey = "Content-Disposition";
+             String headerValue = "attachment; filename=\"" + filePath.substring(filePath.lastIndexOf('/') + 1) + "\"";
+             response.setHeader(headerKey, headerValue);
+             
+             // 读取文件并将内容写入响应输出流
+             try (InputStream inputStream = new FileInputStream(filePath);
+                  OutputStream outputStream = response.getOutputStream()) {
+                 byte[] buffer = new byte[4096];
+                 int bytesRead;
+                 while ((bytesRead = inputStream.read(buffer)) != -1) {
+                     outputStream.write(buffer, 0, bytesRead);
+                 }
+             }
+         }
+     }
+     
+     ```
+
+     
+
