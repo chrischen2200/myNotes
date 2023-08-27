@@ -1,5 +1,3 @@
-# JavaScript学习笔记
-
 ## 1.javascript
 
 ### 1.1ECMAScript
