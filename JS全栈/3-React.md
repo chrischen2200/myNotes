@@ -170,9 +170,22 @@ const MyComponent = () => {
 
 ### 5.1.绑定事件
 
-### 5.2.事件handler的洗发
+采用on+事件名的方式来绑定一个事件，注意，这里和原生的事件是有区别的，原生的事件全是小写onclick，React立的事件是驼峰onClick，React的事件并不是原生事件，而是合成事件。
+
+### 5.2.事件handler的触发
+
+- 直接在render里写行内的箭头函数（不推荐）
+- 在组件内使用箭头函数定义一个方法（推荐）
+- 直接在组件内定义一个非箭头函数，然后在render里直接使用onClick={this.handleCLick.bind(this)}（不推荐）
+- 直接在组件内定义个非箭头函数的方法，然后在constructor里bind(this)（推荐）
 
 ### 5.3.Event对象
+
+和普通浏览器一样，事件handler会被自动传入一个`event`对象，这个对象和普通浏览器`event`对象所包含的方法和属性都基本一致，不同的是React中的`event`对象并不是浏览器提供的，而是它自己内部所构建的。它同样具有event.stopPropagation，event.preventDefault这种常用的方法。
+
+### 5.4.其他
+
+React并不会真正地绑定事件到每一个具体<>的元素上，而是采用事件代理的模式
 
 ## 6.Ref的应用
 
